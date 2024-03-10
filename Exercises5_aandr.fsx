@@ -127,7 +127,7 @@ let rec Aeval (exp: aExp) (state: Map<string, int>) =
                                             0
                                 | Add(exp1, exp2) -> Aeval exp1 state + Aeval exp2 state
                                 | Mul(exp1, exp2) -> Aeval exp1 state * Aeval exp2 state
-                                | Sub(exp1, exp2) -> Aeval exp1 state - Aeval exp2 state
+                                | Sub(exp1, exp2) -> Aeval exp1 state - Aeval exp2 state;;
         
 
 let rec Beval (exp: bExp) (state: Map<string, int>) = 
@@ -137,7 +137,7 @@ let rec Beval (exp: bExp) (state: Map<string, int>) =
                                 | Eq(exp1, exp2) -> Aeval exp1  state <> Aeval exp2 state
                                 | Lt(exp1, exp2) -> Aeval exp1 state > Aeval exp2 state
                                 | Neg(exp) -> not (Beval exp state)
-                                | Con(exp1, exp2) -> Beval exp1 state && Beval exp2 state
+                                | Con(exp1, exp2) -> Beval exp1 state && Beval exp2 state;;
  
 
  let rec stmEval (stm: stm) (state: Map<string, int>) = 
@@ -146,4 +146,10 @@ let rec Beval (exp: bExp) (state: Map<string, int>) =
                                 | Skip -> state  
                                 | Seq(stm1, stm2) -> stmEval stm1 state |> stmEval stm2 
                                 | ITE(bexp, exp1, exp2) -> if Beval bexp state then stmEval exp1 state else stmEval exp2 state
+                                | While(bool, exp) -> if Beval bool state then
+                                                                        let newState = stmEval exp state
+                                                                        stmEval (While(bool, exp)) newState
+                                                                else 
+                                                                    state
+                                                            
 
