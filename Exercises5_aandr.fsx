@@ -240,4 +240,10 @@ I stmt5 state5;;
 
 //Exercise 5.5
 
+(*
+    Exercise 5.5 was solved with inspiration from the allready implemented operations. The IT operation is the same as a ITE operation where 
+    the else leads to a Skip-operation. Similarly, the RU operation is the same as a while-operation where it runs as long as the boolean expression
+    evaluates to false. Thus, the above results have been found.
+*)
 
+//Exercise 5.6
