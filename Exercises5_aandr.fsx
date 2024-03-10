@@ -60,12 +60,48 @@ let rec mapPostOrder (f: 'a -> 'b) (tree: 'a BinTree) =
 
 //Exercise 5.3
 
+//Taking inspiration from the implementation of fold from lecture 4 slide 21 and  the inFoldBack function from lecture 5 slide 9, 
+//the following was produced
+let rec foldInOrder f e  tree = 
+                                            match tree with     
+                                                Leaf -> e
+                                                | Node(n, treeL, treeR) ->
+                                                    let er = foldInOrder f e treeL in
+                                                                foldInOrder f (f er n) treeR;;
 
-let rec foldInOrder (f: 'a -> 'b -> 'b) (tree: 'a BinTree) (e: 'b) = 
-                                                                    match tree with     
-                                                                        Leaf -> e
-                                                                        | Node(n, treeL, treeR) ->
-                                                                            let er = foldInOrder f treeL e
-                                                                                        foldInOrder f treeR (f n er);;
+//however, the implementation following the inFoldBack from the lecture required the use of the in-keyword....                                                                        
 
-                                                                        
+let floatBinTree = Node(43.0,Node(25.0, Node(56.0,Leaf, Leaf), Leaf),
+                                            Node(562.0, Leaf, Node(78.0, Leaf,Leaf)));;
+
+foldInOrder (fun n a -> a + n) 0.0 floatBinTree;;
+
+//it works
+
+
+//Exercise 5.4
+
+//Setup for implementation
+type aExp = (* Arithmetical expressions *)
+        | N of int (* numbers *)
+        | V of string (* variables *)
+        | Add of aExp * aExp (* addition *)
+        | Mul of aExp * aExp (* multiplication *)
+        | Sub of aExp * aExp (* subtraction *)
+
+
+type bExp = (* Boolean expressions *)
+        | TT (* true *)
+        | FF (* false *)
+        | Eq of aExp * aExp (* equality *)
+        | Lt of aExp * aExp (* less than *)
+        | Neg of bExp (* negation *)
+        | Con of bExp * bExp (* conjunction *)
+
+
+type stm = (* statements *)
+        | Ass of string * aExp (* assignment *)
+        | Skip
+        | Seq of stm * stm (* sequential composition *)
+        | ITE of bExp * stm * stm (* if-then-else *)
+        | While of bExp * stm (* while *)        
