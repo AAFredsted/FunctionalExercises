@@ -213,3 +213,22 @@ let stmt4 =
 let state4 = Map.empty.Add("n", 16).Add("root", 0);;
 
 I stmt4 state4;;
+
+//test5 
+
+let stmt5 =
+        While(
+                Lt(V "val", V "toAssess"),
+                    Seq(
+                        Ass("val", Mul(V "val", N 2) ),
+                        Ass("pow2", Add(V "pow2", N 1))
+                    )
+        );;
+
+
+let state5 = Map.empty.Add("toAssess", 64).Add("val", 1).Add("pow2", 0);;
+
+I stmt5 state5;;
+
+//basically, everything can be created using this simple minilanguage if someone had the patience for it.
+
