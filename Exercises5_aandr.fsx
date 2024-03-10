@@ -112,7 +112,7 @@ let update key  value state = Map.add key value state;;
 
 //then, we must be able to
 
-let rec Aeval (exp: aExp) (state: Map<string, int>) = 
+let rec A exp state = 
                             match exp with 
                                 | N n -> n
                                 | V v -> 
@@ -125,31 +125,62 @@ let rec Aeval (exp: aExp) (state: Map<string, int>) =
                                         | ex ->
                                             printfn "An error occured: %s" ex.Message
                                             0
-                                | Add(exp1, exp2) -> Aeval exp1 state + Aeval exp2 state
-                                | Mul(exp1, exp2) -> Aeval exp1 state * Aeval exp2 state
-                                | Sub(exp1, exp2) -> Aeval exp1 state - Aeval exp2 state;;
+                                | Add(exp1, exp2) -> A exp1 state + A exp2 state
+                                | Mul(exp1, exp2) -> A exp1 state * A exp2 state
+                                | Sub(exp1, exp2) -> A exp1 state - A exp2 state;;
         
 
-let rec Beval (exp: bExp) (state: Map<string, int>) = 
+let rec B exp state  = 
                             match exp with
                                 | TT -> true
                                 | FF -> false
-                                | Eq(exp1, exp2) -> Aeval exp1  state <> Aeval exp2 state
-                                | Lt(exp1, exp2) -> Aeval exp1 state > Aeval exp2 state
-                                | Neg(exp) -> not (Beval exp state)
-                                | Con(exp1, exp2) -> Beval exp1 state && Beval exp2 state;;
+                                | Eq(exp1, exp2) -> A exp1  state <> A exp2 state
+                                | Lt(exp1, exp2) -> A exp1 state < A exp2 state
+                                | Neg(exp) -> not (B exp state)
+                                | Con(exp1, exp2) -> B exp1 state && B exp2 state;;
  
 
- let rec stmEval (stm: stm) (state: Map<string, int>) = 
+ let rec I stm state = 
                             match stm with
-                                | Ass(name, exp) -> update name (Aeval exp state) state
+                                | Ass(name, exp) -> update name (A exp state) state
                                 | Skip -> state  
-                                | Seq(stm1, stm2) -> stmEval stm1 state |> stmEval stm2 
-                                | ITE(bexp, exp1, exp2) -> if Beval bexp state then stmEval exp1 state else stmEval exp2 state
-                                | While(bool, exp) -> if Beval bool state then
-                                                                        let newState = stmEval exp state
-                                                                        stmEval (While(bool, exp)) newState
+                                | Seq(stm1, stm2) -> I stm1 state |> I stm2 
+                                | ITE(bexp, exp1, exp2) -> if B bexp state then I exp1 state else I exp2 state
+                                | While(bool, exp) -> if B bool state then
+                                                                        let newState = I exp state
+                                                                        I (While(bool, exp)) newState
                                                                 else 
                                                                     state
-                                                            
 
+//with the implementation of statements complete, we can test the solution to exercise 5.4:                                                     
+
+//test0 addition
+(*
+let stmt0 = Ass("res",(Add(N 10, N 30)));;
+let state0 = Map.empty;;
+
+I stmt0 state0;;
+
+
+//test1 multiplication
+
+let stmt1 = Ass("a", Mul(N 10, N 10));;
+let state1 = Map.empty;;
+
+I stmt1 state1;;
+
+*)
+
+
+//test2 if statements
+
+ let stmt2 = ITE(
+                        Lt(V("a"), V("b")),
+                        Ass("a", V("b")),
+                        Ass("b", V("a"))
+                        )
+let state2_1 = Map.empty.Add("a", 5).Add("b", 10);;
+let state2_2 = Map.empty.Add("a", 15).Add("b", 10);;
+
+I stmt2 state2_1;; //should be 10
+I stmt2 state2_2;; //should be 15
