@@ -35,13 +35,37 @@ let rec mapInOrder (f: 'a -> 'b) (tree: 'a BinTree) =
                 match tree with 
                     Leaf -> Leaf
                     | Node(n, treeL, treeR) ->
-                        Node(f n, mapInOrder f treeL, mapInOrder f treeR);;
+                        let L = mapInOrder f treeL
+                        let N = f n
+                        let R = mapInOrder f treeR
+                        Node(N, L, R);;
 
 mapInOrder (fun x -> x + 1) intBinTree;;
 //and it works :)
 
+// to evaluate how a reordering of the operations from mapInOrder to mapPostOrder could affect the resulting values of the trees, we will implement mapPostOrder:
 
+let rec mapPostOrder (f: 'a -> 'b) (tree: 'a BinTree) = 
+                    match tree with
+                        Leaf -> Leaf
+                        | Node(n, treeL, treeR) ->
+                            let R = mapPostOrder f treeR
+                            let N = f n
+                            let L = mapPostOrder f treeL
+                            Node(N, L, R);;
+
+//as shown, both functions map nodes to nodes with the same ordering of their triplets,
+//meaning that the structure of the tree for both functions will be the same.
+// As the functions only accept static functions acting only on n, I do not see how a non-associative function can be passed to mapPostOrder and mapInOrder
 
 //Exercise 5.3
 
 
+let rec foldInOrder (f: 'a -> 'b -> 'b) (tree: 'a BinTree) (e: 'b) = 
+                                                                    match tree with     
+                                                                        Leaf -> e
+                                                                        | Node(n, treeL, treeR) ->
+                                                                            let er = foldInOrder f treeL e
+                                                                                        foldInOrder f treeR (f n er);;
+
+                                                                        
