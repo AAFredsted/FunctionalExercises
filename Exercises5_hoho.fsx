@@ -106,4 +106,4 @@ let stmt2 = ITE(Lt(N 6,N 2),stmt0,stmt1)
 I stmt2 state0 //returns Map<string,int> = map [("res", 300)] as expected, since it executes the else-clause
 
 let stmt3 = ITE(Neg (Lt(N 6,N 2)),stmt0,stmt1)
-I stmt3 state0 //returns Map<string,int> = map [("res", 40)] as expected, since it executes the x½then-clause
+I stmt3 state0 //returns Map<string,int> = map [("res", 40)] as expected, since it executes the then-clause
