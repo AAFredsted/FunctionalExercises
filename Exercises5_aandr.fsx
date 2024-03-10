@@ -146,11 +146,13 @@ let rec B exp state  =
                                 | Skip -> state  
                                 | Seq(stm1, stm2) -> I stm1 state |> I stm2 
                                 | ITE(bexp, exp1, exp2) -> if B bexp state then I exp1 state else I exp2 state
-                                | While(bool, exp) -> if B bool state then
-                                                                        let newState = I exp state
-                                                                        I (While(bool, exp)) newState
-                                                                else 
-                                                                    state
+                                | While(bool, exp) ->
+                                    if B bool state then
+                                        let newState = I exp state
+                                        I (While(bool, exp)) newState 
+                                    else 
+                                        state
+
 
 //with the implementation of statements complete, we can test the solution to exercise 5.4:                                                     
 
@@ -200,3 +202,14 @@ let state3 = Map.empty.Add("x", 0);
 I stmt3 state3;;
 
 //yayyy, while-loop works !!!
+
+//test4: more advanced loop:
+
+let stmt4 = 
+                While(
+                        Lt( Mul(V "root", V "root"), V "n" ),
+                        Ass("root", Add(V "root", N 1))
+                    );;
+let state4 = Map.empty.Add("n", 16).Add("root", 0);;
+
+I stmt4 state4;;
