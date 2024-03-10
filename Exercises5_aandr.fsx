@@ -105,3 +105,24 @@ type stm = (* statements *)
         | Seq of stm * stm (* sequential composition *)
         | ITE of bExp * stm * stm (* if-then-else *)
         | While of bExp * stm (* while *)        
+
+
+
+let update x  v s = Map.add x v s;;
+
+
+let rec Aeval (exp: aExp) (state: Map<string, int>) = 
+                            match exp with 
+                                | N n -> n
+                                | V v -> 
+                                        try
+                                            Map.find v state
+                                        with
+                                            | :? System.AccessViolationException as ex -> 
+                                                printfn "value not defined in scope. Error message: %s" ex.Message
+                                            | ex ->
+                                                printfn "An error occured: %s" ex.Message
+                                | Add(exp1, exp2) -> Aeval exp1 + Aeval exp2
+                                | Mul(exp1, exp2) -> Aeval exp1 * Aeval exp2
+                                | Sub(exp1, exp2) -> Aeval exp1 - Aeval exp2
+                                        
