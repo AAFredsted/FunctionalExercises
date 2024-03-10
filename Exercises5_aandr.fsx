@@ -104,7 +104,9 @@ type stm = (* statements *)
         | Skip
         | Seq of stm * stm (* sequential composition *)
         | ITE of bExp * stm * stm (* if-then-else *)
-        | While of bExp * stm (* while *)        
+        | While of bExp * stm (* while *)
+        | IT of bExp * stm (* if-then*)
+        | RU of bExp * stm (* repeat-until *)        
 
 
 //To implement thefull operability of the above types, we must first have a way to modify our current state 
@@ -152,12 +154,19 @@ let rec B exp state  =
                                         I (While(bool, exp)) newState 
                                     else 
                                         state
+                                | IT(bexp, exp) -> if B bexp state then I exp state else I Skip state
+                                | RU(bool, exp) -> 
+                                    if B (Neg(bool)) state then
+                                        let newState = I exp state
+                                        I (RU(bool, exp)) newState
+                                    else
+                                        state;;
 
 
 //with the implementation of statements complete, we can test the solution to exercise 5.4:                                                     
 
 //test0 addition
-(*
+
 let stmt0 = Ass("res",(Add(N 10, N 30)));;
 let state0 = Map.empty;;
 
@@ -171,7 +180,6 @@ let state1 = Map.empty;;
 
 I stmt1 state1;;
 
-*)
 
 
 //test2 if statements
@@ -188,8 +196,6 @@ I stmt2 state2_1;; //should be 10
 I stmt2 state2_2;; //should be 15
 
 //yayyy, they work
-
-
 
 //test3: whileLoop //oh nooo
 
@@ -231,4 +237,7 @@ let state5 = Map.empty.Add("toAssess", 64).Add("val", 1).Add("pow2", 0);;
 I stmt5 state5;;
 
 //basically, everything can be created using this simple minilanguage if someone had the patience for it.
+
+//Exercise 5.4
+
 
