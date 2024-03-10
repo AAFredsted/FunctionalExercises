@@ -35,7 +35,7 @@ let floatBinTree = Node(43.0,Node(25.0, Node(56.0,Leaf, Leaf), Leaf),
 foldInOrder (fun n a -> a + n) 0.0 floatBinTree
 
 
-// Exercise 5.4
+// Exercise 5.4 & 5.5
 type aExp =                     (* Arithmetical expressions *)
     | N of int                  (* numbers *)
     | V of string               (* variables *)
@@ -88,6 +88,22 @@ let rec I stm s =
     | Skip -> s
     | Seq(stm1, stm2) -> I stm2 (I stm1 s)
     | ITE(b,stm1,stm2) -> if (B b s) then (I stm1 s) else (I stm2 s)
-    | While(b, stm) -> 
+    | While(b, stm) ->
+        let rec loop s =
+            if B b s then loop (I stm s) else s
+        loop s
     // | IT...
     // | RU...
+
+let stmt0 = Ass("res",(Add(N 10, N 30)))
+let state0 = Map.empty
+I stmt0 state0 //Map<string,int> = map [("res", 40)]
+
+let stmt1 = Ass("res",(Mul(N 10, N 30)))
+I stmt1 state0 //returns Map<string,int> = map [("res", 300)]
+
+let stmt2 = ITE(Lt(N 6,N 2),stmt0,stmt1)
+I stmt2 state0 //returns Map<string,int> = map [("res", 300)] as expected, since it executes the else-clause
+
+let stmt3 = ITE(Neg (Lt(N 6,N 2)),stmt0,stmt1)
+I stmt3 state0 //returns Map<string,int> = map [("res", 40)] as expected, since it executes the then-clause
