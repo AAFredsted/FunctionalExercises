@@ -184,3 +184,19 @@ let state2_2 = Map.empty.Add("a", 15).Add("b", 10);;
 
 I stmt2 state2_1;; //should be 10
 I stmt2 state2_2;; //should be 15
+
+//yayyy, they work
+
+
+
+//test3: whileLoop //oh nooo
+
+let stmt3 = While(
+                        Lt(V "x", N 10),
+                        Ass("x", Add(V "x", N 1))
+                        )
+let state3 = Map.empty.Add("x", 0);
+
+I stmt3 state3;;
+
+//yayyy, while-loop works !!!
