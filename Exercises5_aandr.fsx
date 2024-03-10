@@ -107,9 +107,10 @@ type stm = (* statements *)
         | While of bExp * stm (* while *)        
 
 
+//To implement thefull operability of the above types, we must first have a way to modify our current state 
+let update key  value state = Map.add key value state;;
 
-let update x  v s = Map.add x v s;;
-
+//then, we must be able to
 
 let rec Aeval (exp: aExp) (state: Map<string, int>) = 
                             match exp with 
@@ -138,3 +139,11 @@ let rec Beval (exp: bExp) (state: Map<string, int>) =
                                 | Neg(exp) -> not (Beval exp state)
                                 | Con(exp1, exp2) -> Beval exp1 state && Beval exp2 state
  
+
+ let rec stmEval (stm: stm) (state: Map<string, int>) = 
+                            match stm with
+                                | Ass(name, exp) -> update name (Aeval exp state) state
+                                | Skip -> state  
+                                | Seq(stm1, stm2) -> stmEval stm1 state |> stmEval stm2 
+                                | ITE(bexp, exp1, exp2) -> if Beval bexp state then stmEval exp1 state else stmEval exp2 state
+
