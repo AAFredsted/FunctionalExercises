@@ -115,14 +115,26 @@ let rec Aeval (exp: aExp) (state: Map<string, int>) =
                             match exp with 
                                 | N n -> n
                                 | V v -> 
-                                        try
-                                            Map.find v state
-                                        with
-                                            | :? System.AccessViolationException as ex -> 
-                                                printfn "value not defined in scope. Error message: %s" ex.Message
-                                            | ex ->
-                                                printfn "An error occured: %s" ex.Message
-                                | Add(exp1, exp2) -> Aeval exp1 + Aeval exp2
-                                | Mul(exp1, exp2) -> Aeval exp1 * Aeval exp2
-                                | Sub(exp1, exp2) -> Aeval exp1 - Aeval exp2
-                                        
+                                    try
+                                        Map.find v state
+                                    with
+                                        | :? System.AccessViolationException as ex -> 
+                                            printfn "value not defined in scope. Error message: %s" ex.Message
+                                            0
+                                        | ex ->
+                                            printfn "An error occured: %s" ex.Message
+                                            0
+                                | Add(exp1, exp2) -> Aeval exp1 state + Aeval exp2 state
+                                | Mul(exp1, exp2) -> Aeval exp1 state * Aeval exp2 state
+                                | Sub(exp1, exp2) -> Aeval exp1 state - Aeval exp2 state
+        
+
+let rec Beval (exp: bExp) (state: Map<string, int>) = 
+                            match exp with
+                                | TT -> true
+                                | FF -> false
+                                | Eq(exp1, exp2) -> Aeval exp1  state <> Aeval exp2 state
+                                | Lt(exp1, exp2) -> Aeval exp1 state > Aeval exp2 state
+                                | Neg(exp) -> not (Beval exp state)
+                                | Con(exp1, exp2) -> Beval exp1 state && Beval exp2 state
+ 
