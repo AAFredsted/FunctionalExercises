@@ -235,3 +235,17 @@ I stmt5 state5;;
 *)
 
 //Exercise 5.6
+(*
+
+In the current setup of aExp, bExp and stm, the only way for a an aExp to affect the state of the stm is through the Ass-statement. 
+However, in most programming languages, operations like x++ exist as a shorthand for x = x + 1, which bypass this explicit assignment.
+Thus, if an inc()-operation where to be implemented into the aExp type, one of the following solutions would be necessary to implement it:
+
+1: the modification of state through an aExp would be possible if the evaluation performed by the A-function did not return the result of the
+evaluation as an integer, but instead as a pair which could then be mapped to the state by the I-function. Thus, any return-value from the B-function would
+require the form (string, aExp) where string: char | chars. This would then require the I-function to modify the state after each evaluated aExp through Map.Add()
+
+2: the modification of state would also be possible through the passing of the state-map to the B-function, which would instead return the modified state from each expression evaluation.
+This solution seems less efficient than the first one however, as this would require the B-function to manage the state in a similar way to the I-function, which would be redundant.
+*)
+
