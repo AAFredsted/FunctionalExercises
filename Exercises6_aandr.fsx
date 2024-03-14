@@ -119,8 +119,8 @@ let intpProg (input: Instruction List)  =
         let rec performOprec (input: Instruction List) (s: Stack) = 
                         match input with
                                 | x::xs ->  intpInstr s x |> performOprec  xs
-                                | [] -> s
-        pull (performOprec input (S[]))
+                                | [] -> pull s
+        performOprec input (S[])
 
 
 let intpProgfold (input: Instruction List) = 
@@ -128,16 +128,37 @@ let intpProgfold (input: Instruction List) =
         pull (List.fold (fun s l -> intpInstr s l) s input)
 
 (*
-3. Declare an F# functlet intpProgfold (input: Instruction List) = 
-        let s = (S[])
-        List.fold (intpInstr s) input sion
-        trans: Fexpr * float -> Instruction list
+3. Declare an F# function
+    trans: Fexpr * float -> Instruction list
 
-where Fexpr is the type for expression trees declared in Section 6.2. The value of the ex-
-pression trans(fe, x) is a program prg such that intpProg(prg) gives the float value of
-fe when X has the value x. Hint: The instruction list can be obtained from the postfix form of
-the expression. (See Exercise 6.2.)
+    where Fexpr is the type for expression trees declared in Section 6.2. The value of the ex-
+    pression trans(fe, x) is a program prg such that intpProg(prg) gives the float value of
+    fe when X has the value x. Hint: The instruction list can be obtained from the postfix form of
+    the expression. (See Exercise 6.2.
 *)
-               
 
+let trans (input: Fexpr*float) = 
+        match input with 
+            | (fe, f) ->
+                let fs = Seq.toList ((postfixEval fe).Split(' '))
+
+                let getInsList (fl: float) (si: string) =
+                            match si with 
+                                | "+"-> ADD 
+                                | "-" -> SUB
+                                | "/" -> DIV
+                                | "*" -> MULT
+                                | "x" -> PUSH fl
+                                | "sin" -> SIN
+                                | "cos" -> COS
+                                | "log" -> LOG
+                                | x -> PUSH (float x)
+                                | _ -> failwith "Fexpr cannot be evaluated"
+
+                List.map (getInsList f) fs
+            | _ -> failwith "Wrong input types provided"
+
+
+
+//Exercise 6.3
 
