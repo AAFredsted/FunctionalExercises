@@ -166,3 +166,38 @@ let trans (input: Fexpr*float) =
 Make signature and implementation files for a library of complex numbers with overloaded
 arithmetic operators (cf. Exercise 3.3).
 *)
+
+
+(*
+Signature in .fsi
+module complexNum
+
+type complexNum
+    val ( +. ) : complexNum*complexNum -> complexNum
+    val ( -. ) : complexNum*complexNum -> complexNum
+    val ( -.. ): complexNum -> complexNum 
+    val ( /. ) : complexNum*complexNum -> complexNum
+    val ( *. ) : complexNum*complexNum -> complexNum
+    val toflts: complexNum -> float*float
+    val make : float * float -> complexNum
+
+*)
+
+//actual implementation 
+
+
+//module complexNum
+//does not correctly match due to scheisse
+type complexNum = C of float * float
+let ( +. ) C(a1, bi1) C(a2, bi2) = C((a1 + a2), (bi1 + bi2))
+let ( -. ) C(a1, bi1) C(a2, bi2) = C((a1 - a2), (bi1 - bi2))
+let ( -.. ) C(a, bi) = C(-a, -bi)
+let ( *. ) C(a1, bi1) C(a2, bi2) = C((a1 * a2- bi1 * bi2), (bi1 * a2 - a1 - bi2))
+let ( /. ) (cn1: complexNum) (cn2: complexNum) =            
+                                let numIn C(a, bi)= {
+                                    ia = a/(a*a + bi*bi);
+                                    ibi = -bi/( a*a + bi*bi);
+                                    (ia, ibi)
+                                }
+                                cn *. numIn cn2
+                            
