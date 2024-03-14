@@ -162,3 +162,7 @@ let trans (input: Fexpr*float) =
 
 //Exercise 6.3
 
+(*
+Make signature and implementation files for a library of complex numbers with overloaded
+arithmetic operators (cf. Exercise 3.3).
+*)
