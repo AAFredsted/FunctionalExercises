@@ -1,5 +1,4 @@
 
-using System;
 
 //Exercise 6.1
 (*
@@ -66,20 +65,6 @@ new stack is: r a b c · · · .
 execution of a single instruction:
         intpInstr: Stack -> Instruction -> Stack
 
-2. A program for the calculator is a list of instructions [i1 , i2 , . . . , in ]. A program is executed
-by executing the instructions i1 , i2 , . . . , in one after the other, in that order, starting with an
-empty stack. The result of the execution is the top value of the stack when all instructions
-have been executed.
-Declare an F# function to interpret the execution of a program:
-        intpProg: Instruction list -> float
-
-3. Declare an F# function
-        trans: Fexpr * float -> Instruction list
-
-where Fexpr is the type for expression trees declared in Section 6.2. The value of the ex-
-pression trans(fe, x) is a program prg such that intpProg(prg) gives the float value of
-fe when X has the value x. Hint: The instruction list can be obtained from the postfix form of
-the expression. (See Exercise 6.2.)
 *)
 
 
@@ -91,15 +76,16 @@ let push (item: float) (stack: Stack) =
     match stack with
     | S(items) -> S(item :: items)
 
+//part one
 let intpInstr (s: Stack) (i: Instruction) =
     match (s, i) with
-    | (S(x::xs), instruction) when List.length xs > 0 ->
+    | (S(x::xs), instruction) when List.length xs > 1 ->
         let newVal =
             match instruction with
-            | ADD -> x + (List.head xs)
-            | SUB -> x - (List.head xs)
-            | MULT -> x * (List.head xs)
-            | DIV -> x / (List.head xs)
+            | ADD -> (List.head xs) + x
+            | SUB -> (List.head xs) - x
+            | MULT -> (List.head xs) * x
+            | DIV ->  (List.head xs) / x
             | _ -> failwith "Invalid operation: at least two elements must be present in the stack" // These operations require two elements
         S (newVal::(List.tail xs))
     | (S(x::xs), instruction) ->
@@ -113,8 +99,45 @@ let intpInstr (s: Stack) (i: Instruction) =
         S (newVal::xs)
     | (s, PUSH f) -> push f s
     | _ -> failwith "stop"
+(*
+    2. A program for the calculator is a list of instructions [i1 , i2 , . . . , in ]. A program is executed
+by executing the instructions i1 , i2 , . . . , in one after the other, in that order, starting with an
+empty stack. The result of the execution is the top value of the stack when all instructions
+have been executed.
+Declare an F# function to interpret the execution of a program:
+        intpProg: Instruction list -> float
 
-    
+
+*)
+let pull (s: Stack) = 
+        match s with
+            | S(x::xs) -> x
+            | _ -> 0.0;;
+
+
+let intpProg (input: Instruction List)  = 
+        let rec performOprec (input: Instruction List) (s: Stack) = 
+                        match input with
+                                | x::xs ->  intpInstr s x |> performOprec  xs
+                                | [] -> s
+        pull (performOprec input (S[]))
+
+
+let intpProgfold (input: Instruction List) = 
+        let s = (S[])
+        pull (List.fold (fun s l -> intpInstr s l) s input)
+
+(*
+3. Declare an F# functlet intpProgfold (input: Instruction List) = 
+        let s = (S[])
+        List.fold (intpInstr s) input sion
+        trans: Fexpr * float -> Instruction list
+
+where Fexpr is the type for expression trees declared in Section 6.2. The value of the ex-
+pression trans(fe, x) is a program prg such that intpProg(prg) gives the float value of
+fe when X has the value x. Hint: The instruction list can be obtained from the postfix form of
+the expression. (See Exercise 6.2.)
+*)
                
 
 
