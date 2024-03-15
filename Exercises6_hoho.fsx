@@ -110,3 +110,28 @@ trans ((Mul(Add(X, Const 5.0), X)), 3.0) // outputs Instruction list = [PUSH 3.0
 
 
 // Exercise 6.3
+
+// ComplexNumber signature:
+// module ComplexNumber
+// type ComplexNumber
+// val ( .+) : ComplexNumber -> ComplexNumber -> ComplexNumber
+// val ( .*) : ComplexNumber -> ComplexNumber -> ComplexNumber
+// val ( .-) : ComplexNumber -> ComplexNumber -> ComplexNumber
+// val ( ./) : ComplexNumber -> ComplexNumber -> ComplexNumber
+// val ( ../) : ComplexNumber -> ComplexNumber -> ComplexNumber
+// val make : float * float -> ComplexNumber
+// val toTup : ComplexNumber -> float * float
+
+// ComplexNumber implementation:
+module ComplexNumber
+type ComplexNumber = C of float * float
+let ( .+) C(a,b) C(c,d) = C(a+c,b+d)
+let ( .*) C(a,b) C(c,d) = C(a*c-b*d, b*c+a*d)
+let ( .-) C(a,b) C(c,d) = C(a-c,b-d)
+let ( ./) C(a,b) C(c,d) = C(a*(c/(c*c+d*d))-b*(-d/(c*c+d*d)), b*(c/(c*c+d*d))+a*(-d/(c*c+d*d)))
+let ( ../) C(a,b) C(c,d) = 
+                        let invC = c/(c*c+d*d)
+                        let invD = -d/(c*c+d*d)
+                        C(a*invC-b*invD, b*invC+a*invD)
+let make (a,b) = C(a,b)
+let toTup C(a,b) = (a,b)
