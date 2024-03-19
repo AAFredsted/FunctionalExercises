@@ -109,7 +109,7 @@ let intpProgfold (input: Instruction List) =
 let trans (input: Fexpr*float) = 
         match input with 
             | (fe, f) ->
-                let fs = Seq.toList ((postfixEval fe).Split(' '))
+                let fs = Seq.toList ((fexprToString fe).Split(' '))
 
                 let getInsList (fl: float) (si: string) =
                             match si with 
