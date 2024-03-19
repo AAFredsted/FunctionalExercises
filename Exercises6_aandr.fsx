@@ -68,13 +68,13 @@ execution of a single instruction:
 *)
 
 
-type Instruction = | ADD | SUB | MULT | DIV | SIN | COS | LOG | EXP | PUSH of float
+type Instruction = | ADD | SUB | MULT | DIV | SIN | COS | LOG | EXP | PUSH of float;;
 
-type Stack = S of float List
+type Stack = S of float List;;
 
 let push (item: float) (stack: Stack) =
     match stack with
-    | S(items) -> S(item :: items)
+    | S(items) -> S(item :: items);;
 
 //part one
 let intpInstr (s: Stack) (i: Instruction) =
@@ -194,10 +194,10 @@ let ( -. ) C(a1, bi1) C(a2, bi2) = C((a1 - a2), (bi1 - bi2))
 let ( -.. ) C(a, bi) = C(-a, -bi)
 let ( *. ) C(a1, bi1) C(a2, bi2) = C((a1 * a2- bi1 * bi2), (bi1 * a2 - a1 - bi2))
 let ( /. ) (cn1: complexNum) (cn2: complexNum) =            
-                                let numIn C(a, bi)= {
+                                let numIn C(a, bi) =
                                     ia = a/(a*a + bi*bi);
                                     ibi = -bi/( a*a + bi*bi);
                                     (ia, ibi)
-                                }
+                                
                                 cn *. numIn cn2
                             
