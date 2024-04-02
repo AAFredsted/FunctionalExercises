@@ -45,7 +45,7 @@ let rec gcd_itr m n =
 
 
 //The iterative solution to the problem is as follows:
-let sum_itr m n = if n = 0 then m else sum_itr (m + n) (n - 1);;
+let rec sum_itr m n = if n = 0 then m else sum_itr (m + n) (n - 1);;
 
 //another way to visualize the iterative nature of tail-recursion is through a loop
 let sum_loop m n = 
@@ -113,7 +113,7 @@ for i in xs16 do let _ = facC i id in ()
     loop. Hint: introduce variables to contain the two previously computed Fibonacci numbers.
 *)
 
-let fib_while fn = 
+let fibW fn = 
     let mutable it = fn
     let mutable last = 0
     let mutable next = 1
@@ -134,7 +134,19 @@ let fib_while fn =
     
     2. A continuation-based version fibC: int -> (int -> int) -> int that is based on the
     definition of Fn given in Exercise 1.5.
-    
+
     Compare these two functions using the directive #time, and compare this with the while-loop
     based solution of Exercise 8.6.
 *)
+
+let rec fibA n n1 n2 = 
+    match n with
+    | 0 -> n1
+    | 1 -> n2
+    | _ -> fibA (n-1) n2 (n1+n2)
+
+let rec fibC n c = 
+    if n = 0 then c 0
+    else if n = 1 then c 1
+    else fibC (n - 1) (fun x -> fibC (n - 2 ) (fun y -> c (x + y)));;
+
