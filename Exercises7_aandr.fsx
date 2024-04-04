@@ -150,3 +150,14 @@ let rec fibC n c =
     else if n = 1 then c 1
     else fibC (n - 1) (fun x -> fibC (n - 2 ) (fun y -> c (x + y)));;
 
+#time
+fibA 30 0 1
+#time
+
+#time 
+fibC 30 id
+#time
+
+#time
+fibW 30
+#time
