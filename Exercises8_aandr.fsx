@@ -143,3 +143,11 @@ countAC l3 0 id  //0.002 seconds in runtime
 countAC r3 0 id //0.001 seconds in runtime
 #time
 
+//Exercise 8.5
+
+(*
+        Make a declaration for the sequence of odd numbers.
+*)
+
+let oddseq = Seq.initInfinite (fun x -> if x = 0 then 1 else x*2 + 1 )
+oddseq |> Seq.nth 0
