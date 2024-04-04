@@ -151,3 +151,23 @@ countAC r3 0 id //0.001 seconds in runtime
 
 let oddseq = Seq.initInfinite (fun x -> if x = 0 then 1 else x*2 + 1 )
 oddseq |> Seq.nth 0
+
+//exercise 8.6
+
+(*
+        Make a declaration for the sequence of numbers 1, 1, 2, 6, . . . , n!, . . ..
+*)
+
+
+let rec (!) n =
+    if n = 0 then 1
+    else n * ! (n - 1)
+
+let factseq = Seq.initInfinite (fun x -> !x)
+factseq |> Seq.nth 3
+
+//there we go
+
+
+
+
