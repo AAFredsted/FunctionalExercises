@@ -51,3 +51,25 @@ let rec countAC tree acc cont =
             countAC t1 acc (fun acc' -> countAC t2 acc' cont)
 //this is bad, but I have no other idea of what to do..
 
+//Exercise 8.3
+(*
+        Consider the following list-generating function:
+        let rec bigListK n k =
+        if n=0 then k []
+        else bigListK (n-1) (fun res -> 1::k(res));;
+        The call bigListK 130000 id causes a stack overflow. Analyze this problem.
+*)
+let rec bigListK n k =
+        if n=0 then k []
+        else bigListK (n-1) (fun res -> 1::k(res));;
+
+(*
+        In the recursive call to bigListK, we apply a decremented of 1, so if n starts of with 130000, we will have 130000 calls to bigListK.
+        At the same time, we set k to a function that takes a list as an argument and appends 1 to the list . 
+        Thus, we will build up the following structure. 1::k(1::k(1::k(1::k(...(res))))) where 1::k will be constructed 130000 times for the call.
+        In the world of stacks, we would have an n element large callstack, which would result in the stack overflow.
+
+
+*)
+
+//Exercise 8.4
