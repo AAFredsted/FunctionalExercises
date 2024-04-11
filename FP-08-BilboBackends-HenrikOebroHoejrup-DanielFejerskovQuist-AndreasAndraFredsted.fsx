@@ -25,9 +25,6 @@ let rec countA n t =
 
 let t = Node(Node(Leaf,3,Node(Leaf,3,Leaf)),1,Node(Leaf,4,Leaf))
 countA 0 t
-//as this function contains two nested recursive calls, it cannot be written as an iterative function in f#, 
-//thus not being tail-recursive
-
 
 //Exercise 8.2
 (*
@@ -36,14 +33,16 @@ such that count t = countAC t 0 id. The intuition with countAC t a c is that a i
 number of nodes being counted so far and c is the continuation.
 *)
 
-//this solution combines pattern matching and a continuation to 
+
 let rec countAC t n c = 
     match t with
     | Leaf -> c n
-    | Node(tl,_,tr) ->
-        countAC tl n (fun vl -> countAC tr n (fun vr -> c(vl+vr+1)))
+    | Node(tl, _, tr) ->
+        countAC tl n ( fun vl -> countAC tr n (fun vr -> c(vl + vr + 1)))
 
 countAC t 0 id
+//this is bad, but I have no other idea of what to do..
+
 //Exercise 8.3
 (*
         Consider the following list-generating function:
@@ -142,7 +141,7 @@ countAC r3 0 id //0.001 seconds in runtime
 *)
 
 let oddseq = Seq.initInfinite (fun x -> if x = 0 then 1 else x*2 + 1 )
-oddseq |> Seq.nth 0
+oddseq |> Seq.item 0
 
 //exercise 8.6
 
@@ -156,10 +155,6 @@ let rec (!) n =
     else n * ! (n - 1)
 
 let factseq = Seq.initInfinite (fun x -> !x)
-factseq |> Seq.nth 3
+factseq |> Seq.item 3
 
 //there we go
-
-
-
-
