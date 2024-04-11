@@ -61,4 +61,12 @@ let find heap =
     | _ -> raise ( HeapError("the provided heap is either empty or not of type heap"))
 
 
-let chkHeapProperty heap = 
+let rec chkHeapProperty (heap: Heap<'a>) c =
+    match heap with
+    | EmptyHP -> c true
+    | HP(vh, lh, rh) -> 
+        chkHeapProperty lh (fun v -> c (vh < v)) && 
+        chkHeapProperty rh (fun v -> c (vh < v))
+
+
+chkHeapProperty ex3
