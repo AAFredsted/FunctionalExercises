@@ -1,4 +1,4 @@
-// Question 1
+//Question 1
 
 //polymorphic data type for assignment:
 type Heap<'a when 'a: equality> =
@@ -60,7 +60,7 @@ let find heap =
     | HP(a, one, two) -> a
     | _ -> raise ( HeapError("the provided heap is either empty or not of type heap"))
 
-
+//doesnt work
 let chkHeapProperty heap = 
     let rec helper heap c = 
         match heap with
@@ -69,8 +69,38 @@ let chkHeapProperty heap =
             helper lh (fun () -> vh < find lh ) && 
             helper rh (fun () -> vh < find rh)
     helper heap (fun () -> true)
-    
+
 // bad solution but I dont know what else I can do
 
 chkHeapProperty ex3
+//1.3
 
+let rec map c heap = 
+    match heap with
+    | EmptyHP -> EmptyHP
+    | HP(vp, rv, lv) -> 
+        HP( c vp,  map c rv , map c lv) 
+
+let rec printHeap heap =
+    match heap with
+    | EmptyHP -> ()
+    | HP(vp, rv, lv) -> 
+        printfn "%A" vp
+        printHeap rv
+        printHeap lv
+(*
+let a = map ((+) 1) ex3
+printHeap a
+
+*)
+
+
+//example of mapping which invalidates heap-property
+let to0or1 (arg) =
+    if (System.Random().Next(2) = 0) then 0 else 1;;
+
+let b = map (to0or1) ex3
+
+printHeap b
+
+printfn "%A" (chkHeapProperty b)
