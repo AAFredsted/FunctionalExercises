@@ -121,3 +121,23 @@ let rec triNumC x  = seq {
                         }
 
 printfn "%A" (triNumC 9)
+
+
+//3.2
+(*
+    Bad Declaration
+    let rec filterOddIndex s =
+        Seq.append (Seq.singleton (Seq.item 0 s))
+        (filterOddIndex (Seq.skip 2 s)
+*)
+let rec filterOddIndex s =
+    Seq.append (Seq.singleton (Seq.item 0 s))
+    (filterOddIndex (Seq.skip 2 s))
+
+let rec myFilterOddIndex s =
+    Seq.append (Seq.singleton (Seq.head s))
+               (Seq.delay (fun () -> myFilterOddIndex (Seq.skip 2 s)))
+
+
+filterOddIndex (Seq.take 10 triNum) 
+//should be correct... but function still doesnt work.... whyyy
