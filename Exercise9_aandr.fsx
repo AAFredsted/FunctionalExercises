@@ -88,14 +88,15 @@ let rec printHeap heap =
         printfn "%A" vp
         printHeap rv
         printHeap lv
-(*
+
 let a = map ((+) 1) ex3
 printHeap a
 
-*)
+
 
 
 //example of mapping which invalidates heap-property
+
 let to0or1 (arg) =
     if (System.Random().Next(2) = 0) then 0 else 1;;
 
@@ -104,3 +105,19 @@ let b = map (to0or1) ex3
 printHeap b
 
 printfn "%A" (chkHeapProperty b)
+
+
+
+//exercise 3.1
+
+let triNum = Seq.initInfinite (fun i -> (i*(i+1))/2)
+
+printfn "%A" triNum
+
+//doesnt work as expected, but still kinda cool
+let rec triNumC x  = seq {
+                            yield ((x*(x+1))/2)
+                            yield! triNumC (x+1)
+                        }
+
+printfn "%A" (triNumC 9)
