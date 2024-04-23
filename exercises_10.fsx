@@ -87,19 +87,48 @@ indivisible andres
     returns [1;1;2;3;4;5;7;9]. Define and explain at least three relevant test cases
 *)
 
-let merge (xs, ys) =
-    let rec helpMatch x  acc =
-        match x with 
-        | ([], []) -> acc
-        | (x::xi, []) -> helpMatch (xi, []) [x]@acc
-        | ([], y::yi) -> helpMatch ([], yi) [y]@acc
-        | (x::xi, y::yi) ->
-            if x <= y  then helpMatch (xi, y::yi) [x]@acc 
-            else helpMatch (x::xi,yi) [y]@acc
+let rec merge (xs, ys) =
+    let rec helpMatch (xs, ys) acc =
+        match xs, ys with 
+        | [], [] -> acc
+        | [], y::yi -> helpMatch ([], yi) (y::acc)
+        | x::xi, [] -> helpMatch (xi, []) (x::acc)
+        | x::xi, y::yi ->
+            if x <= y then helpMatch (xi, ys) (x::acc)
+            else helpMatch (xs, yi) (y::acc)
     List.rev (helpMatch (xs, ys) [])
+
 
 
 let lisandro =  ([1;3;4;5],[1;2;7;9])
 merge lisandro
-      
+
+(* Test cases *)
+
+let first = ([], [1; 2; 3; 4; 5; 9])
+
+let second = ([8; 9; 10; 100], [1; 5; 6; 10; 33] )
+
+let third = ([-1; 10; 100], [-100; -10; 2; 5])
+
+let fourth = ([], [])
+(*testcase empty*)
+merge first
+(*testcase intertwining*)
+merge second
+(*testcase negative*)
+merge third
+(*testcase both empty*)
+//find solution for this one
+merge fourth   
     
+let divideAndConquer split merge indivisible (p: 'a list) =
+    let rec dc p =
+        if indivisible p then p
+        else 
+            let s = split p
+            match s with
+            xs, ys -> merge [(dc xs)] [(dc ys)]
+    dc p
+
+divideAndConquer split merge indivisible [22;746;931;975;200]
