@@ -128,7 +128,7 @@ let divideAndConquer split merge indivisible (p: 'a list) =
         else 
             let s = split p
             match s with
-            xs, ys -> merge [(dc xs)] [(dc ys)]
+            xs, ys -> merge ((dc xs), (dc ys))
     dc p
 
 divideAndConquer split merge indivisible [22;746;931;975;200]
